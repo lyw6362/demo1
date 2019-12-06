@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CMDB</title>
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/bootstrap-3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <!-- kendo ui css -->
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/kendoui-2015.2.624/styles/kendo.common.min.css" rel="stylesheet">
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/kendoui-2015.2.624/styles/kendo.default.min.css" rel="stylesheet">
+    <!-- font-awesome -->
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/fontawesome/css/font-awesome.css" rel="stylesheet">
+    <!--蓝鲸提供的公用样式库 -->
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css/bk.css" rel="stylesheet">
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css/bk_pack.css" rel="stylesheet">
+    <!-- 如果要使用Bootstrap的js插件，必须先调入jQuery -->
+    <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/js/jquery-1.10.2.min.js"></script>
+    <!-- 包括所有bootstrap的js插件或者可以根据需要使用的js插件调用　-->
+    <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/echarts-2.0/echarts-all.js"></script>
+    <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <!-- 包括所有kendoui的js插件或者可以根据需要使用的js插件调用　-->
+    <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/kendoui-2015.2.624/js/kendo.all.min.js"></script>
+    <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/echarts-2.0/echarts-all.js"></script>
+    <script src="https://magicbox.bk.tencent.com/static_api/v3/bk/js/bk.js"></script>
+    <!-- 数据埋点统计 -->
+    <script src="http://magicbox.bk.tencent.com/static_api/analysis.js"></script>
+    <!-- 以下两个插件用于在IE8以及以下版本浏览器支持HTML5元素和媒体查询，如果不需要用可以移除 -->
+    <!--[if lt IE 9]><script src="https://magicbox.bk.tencent.com/static_api/v3/assets/js/html5shiv.min.js"></script><script src="https://magicbox.bk.tencent.com/static_api/v3/assets/js/respond.min.js"></script><![endif]-->
+
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/bootstrap-3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/fontawesome/css/font-awesome.css" rel="stylesheet">
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css/bk.css" rel="stylesheet">
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css-pro/bk.css" rel="stylesheet">
+    <link href="static/css/common.css" rel="stylesheet">
+    <link href="static/css/index.css" rel="stylesheet">
+    <style>
+        [type=button] {
+            width: 100px;
+            text-align: center;
+            border-radius: 10px;
+            background-color: red;
+            color: white;
+        }
+
+        [type=button]:hover{
+            background-color: firebrick;
+
+        }
+        #src1,#src2,#src3{
+            display: none;
+        }
+        #t_div {
+            {#background-color: #9c9c9c;#}
+            width: 1000px;
+            height: 600px;
+            margin-left: 240px;
+        }
+        #t_table {
+            background-color: #f4f4f4;
+            border: #ebebeb 2px solid;
+            width: 100%;
+            {#height: 400px;#}
+            display: none;
+        }
+        #t_table tr{
+            border: 1px sienna solid;
+            height: 50px
+        }
+
+        #t_table tr th,#t_table tr td{
+            {#background-color: #57a3f1;#}
+            border: 1px #dfdfdf solid;
+            text-align: center;
+            border-bottom: 2px #cccccc solid;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <nav class="bk-horz-nav11">
+        <div class="bk-nav-logo fl">
+            <img src="https://magicbox.bk.tencent.com/static_api/v3/bk/images/logo1.png">CMDB
+        </div>
+        <div class="bk-nav-user fr">
+            <a href="http://dev.paas.bk.com:8000/" style="color: #a0a0a0"><span>{{request.session.loginflag.username}}</span>
+                <img src="/static/images/avatar.png"></a>
+        </div>
+        <ul class="bk-nav-links fr">
+            <li>
+                <a href="http://dev.paas.bk.com:8000/">首页</a>
+            </li>
+            <li class="active">
+                <a href="/result">搜索结果</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="search-result-box">
+        <img src="/static/images/Computer.png" style="float: left;margin-left: 20px" class="sw"><b style="float: left;font-size: 18px" class="sw">{{ request.session.loginflag2.serverip }}</b>
+        <form class="bk-form bk-inline-form search-form clearfix" action="#" method="post" style="margin-right: 120px">{% csrf_token %}
+
+            <div class="bk-form-item bk-form-large">
+                    <input type="text" name="serverip" value="" class="bk-form-input search-input" placeholder="服务器IP" style="width:200px;height: 40px;border-radius: 10px"><img src="/static/images/error.png" id="src1">
+                    <input type="text" name="servername" value="" class="bk-form-input search-input" placeholder="用户名" style="width:200px;height: 40px;border-radius: 10px">&nbsp;<img src="/static/images/error.png" id="src2">
+                    <input type="password" name="serverpassword" value="" class="bk-form-input search-input" placeholder="密码&nbsp;" style="width:200px;height: 40px;border-radius: 10px"><img src="/static/images/error.png" id="src3">
+                    <input type="button" class="bk-form-input search-input" value="登录" >
+            </div>
+        </form>
+    </div>
+    <br>
+    <div class="king-page-box">
+        <div class="king-layout1-header"></div>
+        <div class="king-layout1-main clearfix">
+            <!-- sidebar start -->
+            <div class="king-layout1-sidebar" style="width:216px;">
+                <nav style="height:100%;" class="   f14">
+                    <div class="king-vertical-nav4">
+                        <div class="sidebar-inner">
+                            <ul class="navi">
+                                <li class="has_submenu current open active">
+                                    <a href="javascript:void(0);"> <i class="fa fa-gear ">                        </i>
+                                        <span>服务器信息</span>
+                                        <span class="pull-right"><i class="fa fa-angle-down"></i></span>
+                                    </a>
+                                    <ul class="sub-menu" style="display: none;">
+                                        <li class="c-open" id="cpu"><a href="javascript:void(0);" >CPU信息<i class="fa fa-chevron-right pull-right"></i></a></li>
+                                        <li class="c-open"><a href="javascript:void(0);">SN序列号与型号<i class="fa fa-chevron-right pull-right"></i></a></li>
+                                        <li class="c-open"><a href="javascript:void(0);">主板型号<i class="fa fa-chevron-right pull-right"></i></a></li>
+                                    </ul>
+                                </li>
+                                <li class="has_submenu current open">
+                                    <a href="javascript:void(0);"> <i class="fa fa-wrench ">                        </i>
+                                        <span>网卡信息</span>
+                                        <span class="pull-right"><i class="fa fa-angle-down"></i></span>
+                                    </a>
+                                    <ul class="sub-menu" style="display: none;">
+                                        <li><a href="javascript:void(0);">网卡<i class="fa fa-chevron-right pull-right"></i></a></li>
+{#                                        <li><a href="javascript:void(0);">表单二<i class="fa fa-chevron-right pull-right"></i></a></li>#}
+{#                                        <li><a href="javascript:void(0);">表单三<i class="fa fa-chevron-right pull-right"></i></a></li>#}
+                                    </ul>
+                                </li>
+                                <li class="has_submenu current open c-open">
+                                    <a href="javascript:void(0);"> <i class="fa fa-tasks ">                        </i>
+                                        <span>磁盘信息</span>
+                                        <span class="pull-right"><i class="fa fa-angle-down"></i></span>
+                                    </a>
+                                    <ul class="sub-menu" style="display: block;">
+                                        <li><a href="javascript:void(0);">内存条情况及使用信息<i class="fa fa-chevron-right pull-right"></i></a></li>
+                                        <li><a href="javascript:void(0);">磁盘使用情况<i class="fa fa-chevron-right pull-right"></i></a></li>
+                                        <li><a href="javascript:void(0);">其它磁盘外设信息<i class="fa fa-chevron-right pull-right"></i></a></li>
+                                    </ul>
+                                </li>
+                                <li class="has_submenu current open c-open">
+                                    <a href="javascript:void(0);"> <i class="fa fa-ellipsis-h ">                        </i>
+                                        <span>其他</span>
+                                        <span class="pull-right"><i class="fa fa-angle-down"></i></span>
+                                    </a>
+                                    <ul class="sub-menu" style="display: block;">
+                                        <li><a href="javascript:void(0);">空白<i class="fa fa-chevron-right pull-right"></i></a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            <!-- sidebar end -->
+            <!-- content start -->
+    <div id="t_div">
+        <table id="t_table">
+            <tr >
+                <th>序号</th>
+                <th>CPU数量</th>
+                <th>在线CPU列表</th>
+                <th>BogoMIPS</th>
+                <th>CPU MHZ</th>
+                <th>型号名称</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td id="2"></td>
+                <td id="3"></td>
+                <td id="4"></td>
+                <td id="5"></td>
+                <td id="6"></td>
+            </tr>
+
+
+
+        </table>
+
+
+    </div>
+            <!-- content end -->
+        </div>
+    </div>
+
+    <footer class="bk-footer">
+        <div class="bk-footer-links">
+            <ul>
+                <li>
+                    <a href="###">QQ咨询</a>
+                </li>
+                <li>
+                    <a href="###">蓝鲸论坛</a>
+                </li>
+                <li>
+                    <a href="###">蓝鲸官网</a>
+                </li>
+                <li>
+                    <a href="###">蓝鲸智云工作台</a>
+                </li>
+            </ul>
+        </div>
+        <p class="bk-footer-copyright">
+            Copyright &copy; 2012-2017 Tencent BlueKing. All Rights Reserved. 蓝鲸智云 版权所有
+        </p>
+    </footer>
+    <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/js/jquery-1.10.2.min.js"></script>
+    <script src="https://magicbox.bk.tencent.com/static_api/v3/assets/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+</body>
+   <script>
+        $(function(){
+             var li = $('.navi li');
+             li.each(function(){
+             $(this).click(function(){
+             if( $(this).hasClass('c-open')){
+                $(this).find('ul').slideUp(350);
+                $(this).removeClass('c-open');
+             }else{
+               $(this).find('ul').slideDown(350);
+               $(this).addClass('c-open');
+               }
+              })
+           });
+        })
+    </script>
+    <script>
+        $(function(){
+                function renderTpl(str, cfg) {
+                    var re = /(#(.+?)#)/g;
+
+                    return str.replace(re, function() {
+                        var val = cfg[arguments[2]]+'';
+                        if(typeof val == 'undefined') {
+                            val = '';
+                        }
+                        return val;
+                    });
+                }
+
+                // 异步请求后台数据
+                $.ajax({
+                    url: 'https://magicbox.bk.tencent.com/static_api/v3/components/table7/data.json',
+                    type: 'GET',
+                    success: function(res){
+                        var _html = ' ';
+                        var list = res.items;
+                        var tpl = $('#tpl_15751111331212').html();
+                        var headerTpl =  $('#header_tpl_15751111331212').html();
+                        for (var i=0,len=list.length; i < len; i++){
+                            var item = list[i];
+                            _html += renderTpl(tpl, item)
+                        }
+                        $('.ranger-box2 tbody').html(_html);
+                        $('.ranger-box2 thead').html(renderTpl(headerTpl,res.catalogues));
+                    }
+                });
+
+                //校验服务器信息
+                $("[type=button]").click(function () {
+                var serverip= $('[name=serverip]').val();
+                var servername=$('[name=servername]').val();
+                var serverpassword=$('[name=serverpassword]').val();
+                console.log(serverip,servername,serverpassword);
+                $.post('/server_verify',{"serverip":serverip,"servername":servername,"serverpassword":serverpassword},function (data) {
+                    if (data.flag ===1){
+
+                        $("#src1").show();
+                         setTimeout(function () {
+                            $("#src1").hide()
+                            },3000);
+                    } else if(data.flag ===2) {
+                        $("#src2").show();
+                        setTimeout(function () {
+                            $("#src2").hide()
+                        }, 3000);
+                    } else if(data.flag === 3){
+                        $("#src3").show();
+                        setTimeout(function () {
+                            $("#src3").hide()
+                        }, 3000);
+
+                    } else {
+                         alert("服务器登陆成功");
+                        $("b").text(serverip);
+                    }
+                },'json');
+
+                });
+                //获取CPU信息
+                $("#cpu").click(function () {
+                    console.log(1);
+                    if($("b").text().length>0) {
+                        $.post('/get_cpu', {}, function (info) {
+                            $('#t_table').show();
+                            $('#2').html(info.bk_cpu);
+                            $('#3').html(info.bk_os_version);
+                            $('#4').html(info.bk_mac);
+                            $('#5').html(info.bk_cpu_mhz);
+                            $('#6').html(info.bk_cpu_module);
+                            console.log(info)
+                        }, "json")
+                    }
+                });
+
+
+                });
+
+
+    </script>
+
+
+
+</html>
